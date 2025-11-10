@@ -43,12 +43,12 @@ fun BottomNavigationBar(modifier: Modifier = Modifier) {
     ) {
         BottomNavItem.entries.forEach { item ->
             val isSelected =
-                currentDestination?.hierarchy?.any { it.hasRoute(item.destination::class) } == true
+                currentDestination?.hierarchy?.any { it.hasRoute(item.screen::class) } == true
 
             NavigationBarItem(
                 selected = isSelected,
                 onClick = {
-                    navController.navigate(item.destination) {
+                    navController.navigate(item.screen) {
                         navController.graph.startDestinationRoute?.let {
                             popUpTo(it) {
                                 saveState = true
