@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.route.e_commerce.navigation.Destination
+import com.route.e_commerce.navigation.Screen
 import com.route.e_commerce.screens.main.category.CategoryScreen
 import com.route.e_commerce.screens.main.home.HomeScreen
 import com.route.e_commerce.screens.main.product_list.ProductListScreen
@@ -19,15 +19,15 @@ fun MainNavGraph(modifier: Modifier) {
 
     NavHost(
         navController = navController,
-        startDestination = Destination.Home,
+        startDestination = Screen.Home,
         modifier = modifier
     ) {
-        composable<Destination.Home> { HomeScreen() }
-        composable<Destination.Category> { CategoryScreen() }
-        composable<Destination.Wishlist> { WishlistScreen() }
-        composable<Destination.Profile> { ProfileScreen() }
-        composable<Destination.ProductList> { backStackEntry ->
-            val productList = backStackEntry.toRoute<Destination.ProductList>()
+        composable<Screen.Home> { HomeScreen() }
+        composable<Screen.Category> { CategoryScreen() }
+        composable<Screen.Wishlist> { WishlistScreen() }
+        composable<Screen.Profile> { ProfileScreen() }
+        composable<Screen.ProductList> { backStackEntry ->
+            val productList = backStackEntry.toRoute<Screen.ProductList>()
             ProductListScreen(subCategoryId = productList.subCategoryId)
         }
     }

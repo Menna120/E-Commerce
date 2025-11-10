@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
-import com.route.e_commerce.navigation.Destination
+import com.route.e_commerce.navigation.Screen
 import com.route.e_commerce.ui.theme.ECommerceTheme
 import com.route.e_commerce.utils.LocalMainNavController
 
@@ -22,7 +22,7 @@ fun CategoryScreen() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Button(onClick = { navController.navigate(Destination.ProductList(subCategoryId = "Women’s Fashion")) }) {
+        Button(onClick = { navController.navigate(Screen.ProductList(subCategoryId = "Women’s Fashion")) }) {
             Text(text = "Go to Product List Screen")
         }
     }

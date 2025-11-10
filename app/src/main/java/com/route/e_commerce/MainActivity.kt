@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
                 val startDestination by viewModel.startDestination.collectAsState()
 
                 startDestination?.let {
-                    AppNavGraph(startDestination = it)
+                    AppNavGraph(startScreen = it)
                 }
             }
         }

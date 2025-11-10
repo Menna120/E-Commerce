@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
-import com.route.e_commerce.navigation.Destination
+import com.route.e_commerce.navigation.Screen
 import com.route.e_commerce.ui.theme.ECommerceTheme
 import com.route.e_commerce.utils.LocalAppNavController
 
@@ -26,7 +26,7 @@ fun ProductListScreen(subCategoryId: String) {
     ) {
         Text(text = "sub-category: $subCategoryId")
 
-        Button(onClick = { navController.navigate(Destination.ProductDetails("Jeans")) }) {
+        Button(onClick = { navController.navigate(Screen.ProductDetails("Jeans")) }) {
             Text(text = "Go to Product Details Screen")
         }
     }
