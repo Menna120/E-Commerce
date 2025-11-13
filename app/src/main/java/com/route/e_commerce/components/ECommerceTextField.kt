@@ -20,7 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -38,12 +38,11 @@ fun ECommerceTextField(
     modifier: Modifier = Modifier,
     placeholderText: String? = null,
     isPassword: Boolean = false,
-    readOnly: Boolean = false,
-    errorMessage: String? = null,
+    isEdit: Boolean = false,
+    onEditClick: (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     labelColor: Color = MaterialTheme.colorScheme.onPrimary,
-    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
-    trailingIcon: @Composable (() -> Unit)? = null,
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
     val typography = MaterialTheme.typography
     val shape = MaterialTheme.shapes
@@ -66,37 +65,31 @@ fun ECommerceTextField(
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
             textStyle = typography.bodyMedium,
-            readOnly = readOnly,
             placeholder = {
                 Text(
                     text = placeholderText ?: label,
                     style = typography.bodyMedium.copy(fontWeight = FontWeight.Light)
                 )
             },
-            supportingText = {
-                errorMessage?.let {
-                    Text(
-                        text = it,
-                        style = typography.bodyMedium.copy(fontWeight = FontWeight.Light)
-                    )
-                }
-            },
             trailingIcon = {
                 if (isPassword) {
                     IconButton({ passwordVisible = !passwordVisible }) {
                         Icon(
-                            imageVector = ImageVector.vectorResource(
-                                if (passwordVisible) R.drawable.ic_view
-                                else R.drawable.ic_hide
-                            ),
+                            imageVector = ImageVector.vectorResource(if (passwordVisible) R.drawable.ic_view else R.drawable.ic_hide),
                             contentDescription = if (passwordVisible) "Hide password" else "Show password"
                         )
                     }
-                } else {
-                    trailingIcon?.invoke()
+                }
+
+                if (isEdit) {
+                    IconButton({ onEditClick?.invoke() }) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_edit),
+                            contentDescription = stringResource(R.string.edit, label),
+                        )
+                    }
                 }
             },
-            isError = errorMessage != null,
             singleLine = true,
             keyboardOptions = keyboardOptions,
             visualTransformation = if (isPassword && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
@@ -107,7 +100,7 @@ fun ECommerceTextField(
 }
 
 @Composable
-fun OutlinedTextFieldDefaults.authColors(): TextFieldColors {
+fun OutlinedTextFieldDefaults.onPrimaryColors(): TextFieldColors {
     val scheme = MaterialTheme.colorScheme
 
     return colors(
@@ -126,7 +119,7 @@ fun OutlinedTextFieldDefaults.authColors(): TextFieldColors {
 }
 
 @Composable
-fun OutlinedTextFieldDefaults.accountColors(): TextFieldColors {
+fun OutlinedTextFieldDefaults.onBackgroundColors(): TextFieldColors {
     val scheme = MaterialTheme.colorScheme
 
     return colors(
@@ -144,11 +137,11 @@ fun OutlinedTextFieldDefaults.accountColors(): TextFieldColors {
 fun PasswordTextFieldPreview() {
     ECommerceTheme {
         ECommerceTextField(
-            value = "example@email.com",
+            value = "P@ssw. 0rD",
             onValueChange = {},
-            label = "Email",
+            label = "Password",
             isPassword = true,
-            colors = OutlinedTextFieldDefaults.authColors()
+            colors = OutlinedTextFieldDefaults.onPrimaryColors()
         )
     }
 }
@@ -161,11 +154,10 @@ fun AccountTextFieldPreview() {
             value = "mohamed.N@gmail.com",
             onValueChange = {},
             label = "Your E-mail",
-            readOnly = true,
+            onEditClick = {},
+            isEdit = true,
             labelColor = MaterialTheme.colorScheme.onBackground,
-            colors = OutlinedTextFieldDefaults.accountColors()
-        ) {
-            Icon(painterResource(R.drawable.ic_edit), "")
-        }
+            colors = OutlinedTextFieldDefaults.onBackgroundColors()
+        )
     }
 }

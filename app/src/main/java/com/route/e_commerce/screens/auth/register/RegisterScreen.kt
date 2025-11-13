@@ -30,7 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import com.route.e_commerce.R
 import com.route.e_commerce.components.ECommerceTextField
 import com.route.e_commerce.components.RouteLogo
-import com.route.e_commerce.components.authColors
+import com.route.e_commerce.components.onPrimaryColors
 import com.route.e_commerce.navigation.Screen
 import com.route.e_commerce.screens.auth.common.AuthButton
 import com.route.e_commerce.screens.auth.common.LoadingIndicator
@@ -113,7 +113,7 @@ fun RegisterContent(
                 capitalization = KeyboardCapitalization.Words,
                 imeAction = ImeAction.Next
             ),
-            colors = OutlinedTextFieldDefaults.authColors()
+            colors = OutlinedTextFieldDefaults.onPrimaryColors()
         )
 
         Spacer(modifier = Modifier.weight(.2f))
@@ -127,7 +127,7 @@ fun RegisterContent(
                 keyboardType = KeyboardType.Phone,
                 imeAction = ImeAction.Next
             ),
-            colors = OutlinedTextFieldDefaults.authColors()
+            colors = OutlinedTextFieldDefaults.onPrimaryColors()
         )
 
         Spacer(modifier = Modifier.weight(.2f))
@@ -141,7 +141,7 @@ fun RegisterContent(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
             ),
-            colors = OutlinedTextFieldDefaults.authColors()
+            colors = OutlinedTextFieldDefaults.onPrimaryColors()
         )
 
         Spacer(modifier = Modifier.weight(.2f))
@@ -156,7 +156,7 @@ fun RegisterContent(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
             ),
-            colors = OutlinedTextFieldDefaults.authColors()
+            colors = OutlinedTextFieldDefaults.onPrimaryColors()
         )
 
         Spacer(modifier = Modifier.weight(.5f))
