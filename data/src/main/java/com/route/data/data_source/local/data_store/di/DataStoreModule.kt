@@ -1,4 +1,4 @@
-package com.route.data.data_source.local.di
+package com.route.data.data_source.local.data_store.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore

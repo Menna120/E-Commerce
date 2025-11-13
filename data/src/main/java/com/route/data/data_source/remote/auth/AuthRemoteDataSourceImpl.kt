@@ -82,9 +82,9 @@ class AuthRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun updateUser(
         token: String,
-        name: String,
-        email: String,
-        phone: String
+        name: String?,
+        email: String?,
+        phone: String?
     ): Flow<Resource<Unit>> =
         safeAPICall {
             val updateUser = authService.updateUser(

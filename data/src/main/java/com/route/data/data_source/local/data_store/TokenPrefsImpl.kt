@@ -1,4 +1,4 @@
-package com.route.data.data_source.local
+package com.route.data.data_source.local.data_store
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

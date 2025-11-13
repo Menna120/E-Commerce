@@ -8,7 +8,6 @@ import com.route.domain.repo.auth.AuthRepository
 import com.route.domain.repo.local_storage.TokenPrefs
 import com.route.domain.repo.local_storage.UserPrefs
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
@@ -28,7 +27,7 @@ class AuthRepositoryImpl @Inject constructor(
             ).onEach { response ->
                 if (response is Resource.Success) {
                     response.data?.let { tokenPrefs.saveToken(it) }
-                    userPrefs.saveUser(User(email = email))
+                    userPrefs.saveUser(User(email = email, password = password))
                 }
             }
         }
@@ -53,7 +52,8 @@ class AuthRepositoryImpl @Inject constructor(
                     User(
                         name = name,
                         email = email,
-                        phone = phone
+                        phone = phone,
+                        password = password
                     )
                 )
             }
@@ -76,6 +76,42 @@ class AuthRepositoryImpl @Inject constructor(
         ).onEach { response ->
             if (response is Resource.Success) {
                 response.data?.let { tokenPrefs.saveToken(it) }
+            }
+        }
+    }
+
+    override suspend fun updatePassword(
+        token: String,
+        currentPassword: String,
+        password: String,
+        rePassword: String
+    ): Flow<Resource<String?>> = withContext(ioDispatcher) {
+        authRemoteDataSource.updatePassword(
+            token = token,
+            currentPassword = currentPassword,
+            password = password,
+            rePassword = rePassword
+        ).onEach { response ->
+            if (response is Resource.Success) {
+                response.data?.let { tokenPrefs.saveToken(it) }
+            }
+        }
+    }
+
+    override suspend fun updateUser(
+        token: String,
+        name: String?,
+        email: String?,
+        phone: String?
+    ): Flow<Resource<Unit>> = withContext(ioDispatcher) {
+        authRemoteDataSource.updateUser(
+            token = token,
+            name = name,
+            email = email,
+            phone = phone,
+        ).onEach { response ->
+            if (response is Resource.Success) {
+                userPrefs.saveUser(User(name = name, email = email, phone = phone))
             }
         }
     }

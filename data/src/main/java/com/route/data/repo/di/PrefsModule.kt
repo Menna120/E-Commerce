@@ -1,7 +1,7 @@
 package com.route.data.repo.di
 
-import com.route.data.data_source.local.TokenPrefsImpl
-import com.route.data.data_source.local.UserPrefsImpl
+import com.route.data.data_source.local.data_store.TokenPrefsImpl
+import com.route.data.data_source.local.data_store.UserPrefsImpl
 import com.route.domain.repo.local_storage.TokenPrefs
 import com.route.domain.repo.local_storage.UserPrefs
 import dagger.Binds
@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class LocalStorageModule {
+abstract class PrefsModule {
 
     @Binds
     @Singleton
