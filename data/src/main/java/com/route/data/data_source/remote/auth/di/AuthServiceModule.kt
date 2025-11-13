@@ -1,4 +1,4 @@
-package com.route.data.data_source.remote.di
+package com.route.data.data_source.remote.auth.di
 
 import com.route.data.data_source.remote.auth.api.AuthService
 import dagger.Module
@@ -10,7 +10,8 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object ServiceModule {
+object AuthServiceModule {
+
     @Provides
     @Singleton
     fun provideAuthService(retrofit: Retrofit): AuthService =

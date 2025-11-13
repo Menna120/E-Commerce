@@ -1,4 +1,4 @@
-package com.route.data.repo.di
+package com.route.data.repo.auth.di
 
 import com.route.data.data_source.remote.auth.AuthRemoteDataSourceImpl
 import com.route.data.repo.auth.AuthRepositoryImpl

@@ -21,4 +21,23 @@
     <string name="enter_your_password_again">enter your password again</string>
     <string name="logged_in_successfully">Logged In Successfully</string>
     <string name="registration_successful">Registration Successful</string>
+    <string name="welcome">Welcome, %1$s</string>
+    <string name="edit">Edit %1$s</string>
+    <string name="addresses">Addresses</string>
+    <string name="change_password">Change Password</string>
+    <string name="your_full_name">Your full name</string>
+    <string name="your_e_mail">Your E-mail</string>
+    <string name="your_mobile_number">Your mobile number</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="current_password">Current Password</string>
+    <string name="new_password">New Password</string>
+    <string name="re_enter_password">Re-enter Password</string>
+    <string name="update">Update</string>
+    <string name="your_addresses">Your Addresses</string>
+    <string name="add_new_address">Add New Address</string>
+    <string name="name">Name</string>
+    <string name="details">Details</string>
+    <string name="phone">Phone</string>
+    <string name="city">City</string>
 </resources>

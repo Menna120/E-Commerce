@@ -3,7 +3,7 @@ package com.route.domain.repo.auth
 import com.route.domain.base.Resource
 import kotlinx.coroutines.flow.Flow
 
-interface AuthRepository {
+interface AuthRemoteDataSource {
     suspend fun login(email: String, password: String): Flow<Resource<String?>>
     suspend fun register(
         name: String,

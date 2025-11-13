@@ -1,4 +1,4 @@
-package com.route.data.data_source.local
+package com.route.data.data_source.local.data_store
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -18,19 +18,15 @@ class UserPrefsImpl @Inject constructor(
         val USER_NAME = stringPreferencesKey("user_name")
         val USER_EMAIL = stringPreferencesKey("user_email")
         val USER_PHONE = stringPreferencesKey("user_phone")
+        val USER_PASSWORD = stringPreferencesKey("user_password")
     }
 
     override suspend fun saveUser(user: User) {
         preferences.edit { prefs ->
-            user.name?.let { prefs[PreferencesKeys.USER_NAME] = it } ?: prefs.remove(
-                PreferencesKeys.USER_NAME
-            )
-            user.email?.let { prefs[PreferencesKeys.USER_EMAIL] = it } ?: prefs.remove(
-                PreferencesKeys.USER_EMAIL
-            )
-            user.phone?.let { prefs[PreferencesKeys.USER_PHONE] = it } ?: prefs.remove(
-                PreferencesKeys.USER_PHONE
-            )
+            user.name?.let { prefs[PreferencesKeys.USER_NAME] = it }
+            user.email?.let { prefs[PreferencesKeys.USER_EMAIL] = it }
+            user.phone?.let { prefs[PreferencesKeys.USER_PHONE] = it }
+            user.password?.let { prefs[PreferencesKeys.USER_PASSWORD] = it }
         }
     }
 
@@ -40,13 +36,13 @@ class UserPrefsImpl @Inject constructor(
                 val name = prefs[PreferencesKeys.USER_NAME]
                 val email = prefs[PreferencesKeys.USER_EMAIL]
                 val phone = prefs[PreferencesKeys.USER_PHONE]
+                val password = prefs[PreferencesKeys.USER_PASSWORD]
 
-                User(name = name, email = email, phone = phone)
+                User(name = name, email = email, phone = phone, password = password)
             }.first()
         } catch (e: Exception) {
             e.printStackTrace()
             User()
         }
     }
-
 }
