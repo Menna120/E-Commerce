@@ -1,5 +1,6 @@
 package com.route.e_commerce.screens.main.profile
 
+import androidx.lifecycle.viewModelScope
 import com.route.domain.base.Resource
 import com.route.domain.usecases.address.AddAddressUseCase
 import com.route.domain.usecases.address.DeleteAddressUseCase
@@ -9,6 +10,7 @@ import com.route.domain.usecases.auth.UpdateUserUseCase
 import com.route.domain.usecases.local_storage.GetUserUseCase
 import com.route.e_commerce.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,68 +23,81 @@ class ProfileViewModel @Inject constructor(
     private val updatePasswordUseCase: UpdatePasswordUseCase
 ) : BaseViewModel<ProfileState, ProfileEvent, ProfileEffect>(ProfileState()) {
 
-    override suspend fun handleAction(action: ProfileEvent) {
-        when (action) {
+    override fun handleEvent(event: ProfileEvent) {
+        when (event) {
             is ProfileEvent.LoadInitialData -> {
-                updateState(viewState.value.copy(isLoading = true))
-                getUser()
-                getAddresses()
-                updateState(viewState.value.copy(isLoading = false))
+                setState { copy(isLoading = true) }
+                viewModelScope.launch {
+                    getUser()
+                    getAddresses()
+                    setState { copy(isLoading = false) }
+                }
             }
 
-            is ProfileEvent.UpdateUser -> updateUser(
-                action.name,
-                action.email,
-                action.phone
-            )
-
-            is ProfileEvent.UpdatePassword -> updatePassword(
-                action.current,
-                action.new,
-                action.reNew
-            )
-
-            is ProfileEvent.AddAddress -> addAddress(
-                action.name,
-                action.details,
-                action.phone,
-                action.city
-            )
-
-            is ProfileEvent.DeleteAddress -> deleteAddress(action.addressId)
-
-            is ProfileEvent.IsAddressesBottomSheetVisible -> updateState(
-                viewState.value.copy(showAddressesBottomSheet = action.visible)
-            )
-
-            is ProfileEvent.IsUpdatePasswordDialogVisible -> updateState(
-                viewState.value.copy(showUpdatePasswordDialog = action.visible)
-            )
-
-            is ProfileEvent.OpenEditFieldDialog -> updateState(
-                viewState.value.copy(
-                    showEditFieldDialog = true,
-                    editingUserDataField = Pair(action.label, action.value)
+            is ProfileEvent.UpdateUser -> viewModelScope.launch {
+                updateUser(
+                    event.name,
+                    event.email,
+                    event.phone
                 )
-            )
+            }
 
-            is ProfileEvent.CloseEditFieldDialog -> updateState(
-                viewState.value.copy(
+            is ProfileEvent.UpdatePassword -> viewModelScope.launch {
+                updatePassword(
+                    event.current,
+                    event.new,
+                    event.reNew
+                )
+            }
+
+            is ProfileEvent.AddAddress -> viewModelScope.launch {
+                addAddress(
+                    event.name,
+                    event.details,
+                    event.phone,
+                    event.city
+                )
+            }
+
+            is ProfileEvent.DeleteAddress -> viewModelScope.launch {
+                deleteAddress(event.addressId)
+            }
+
+            is ProfileEvent.IsAddressesBottomSheetVisible -> setState {
+                copy(showAddressesBottomSheet = event.visible)
+            }
+
+            is ProfileEvent.IsUpdatePasswordDialogVisible -> setState {
+                copy(showUpdatePasswordDialog = event.visible)
+            }
+
+            is ProfileEvent.OpenEditFieldDialog -> setState {
+                copy(
+                    showEditFieldDialog = true,
+                    editingUserDataField = Pair(event.label, event.value)
+                )
+            }
+
+            is ProfileEvent.CloseEditFieldDialog -> setState {
+                copy(
                     showEditFieldDialog = false,
                     editingUserDataField = null
                 )
-            )
+            }
         }
     }
 
-    private suspend fun getUser() = updateState(viewState.value.copy(user = getUserUseCase()))
+    private suspend fun getUser() {
+        val user = getUserUseCase()
+        setState { copy(user = user) }
+    }
 
     private suspend fun getAddresses() {
         getAddressesUseCase().collect {
             handleResource(
                 it,
                 onSuccess = { addresses ->
-                    updateState(viewState.value.copy(addresses = addresses ?: emptyList()))
+                    setState { copy(addresses = addresses ?: emptyList()) }
                 }
             )
         }
@@ -91,7 +106,7 @@ class ProfileViewModel @Inject constructor(
     private suspend fun updateUser(name: String?, email: String?, phone: String?) {
         updateUserUseCase(name, email, phone).collect {
             handleResource(it, onSuccess = {
-                sendEffect(ProfileEffect.ShowToast("Updated Successfully"))
+                setEffect { ProfileEffect.ShowToast("Updated Successfully") }
                 getUser()
             })
         }
@@ -99,13 +114,13 @@ class ProfileViewModel @Inject constructor(
 
     private suspend fun updatePassword(current: String, new: String, reNew: String) {
         if (new != reNew) {
-            sendEffect(ProfileEffect.ShowToast("Passwords do not match"))
+            setEffect { ProfileEffect.ShowToast("Passwords do not match") }
             return
         }
         updatePasswordUseCase(current, new).collect {
             handleResource(
                 it,
-                onSuccess = { sendEffect(ProfileEffect.ShowToast("Password updated successfully")) })
+                onSuccess = { setEffect { ProfileEffect.ShowToast("Password updated successfully") } })
         }
     }
 
@@ -115,10 +130,10 @@ class ProfileViewModel @Inject constructor(
                 it,
                 onSuccess = { addresses ->
                     addresses?.let {
-                        sendEffect(ProfileEffect.ShowToast("Address added Successfully"))
-                        updateState(viewState.value.copy(addresses = it))
+                        setEffect { ProfileEffect.ShowToast("Address added Successfully") }
+                        setState { copy(addresses = it) }
                     }
-                        ?: sendEffect(ProfileEffect.ShowToast("Couldn't add the address"))
+                        ?: setEffect { ProfileEffect.ShowToast("Couldn't add the address") }
                 }
             )
         }
@@ -130,10 +145,10 @@ class ProfileViewModel @Inject constructor(
                 it,
                 onSuccess = { addresses ->
                     addresses?.let {
-                        sendEffect(ProfileEffect.ShowToast("Address deleted Successfully"))
-                        updateState(viewState.value.copy(addresses = it))
+                        setEffect { ProfileEffect.ShowToast("Address deleted Successfully") }
+                        setState { copy(addresses = it) }
                     }
-                        ?: sendEffect(ProfileEffect.ShowToast("Couldn't delete the address"))
+                        ?: setEffect { ProfileEffect.ShowToast("Couldn't delete the address") }
                 }
             )
         }
@@ -145,13 +160,13 @@ class ProfileViewModel @Inject constructor(
     ) {
         when (resource) {
             is Resource.Success -> {
-                updateState(viewState.value.copy(isLoading = false))
+                setState { copy(isLoading = false) }
                 onSuccess(resource.data)
             }
 
             is Resource.Error -> {
-                updateState(viewState.value.copy(isLoading = false))
-                sendEffect(ProfileEffect.ShowToast(resource.errorMessage))
+                setState { copy(isLoading = false) }
+                setEffect { ProfileEffect.ShowToast(resource.errorMessage) }
             }
 
             else -> Unit

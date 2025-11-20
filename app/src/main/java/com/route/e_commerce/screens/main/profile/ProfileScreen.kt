@@ -33,8 +33,8 @@ import com.route.domain.entity.User
 import com.route.e_commerce.R
 import com.route.e_commerce.components.ECommerceTextField
 import com.route.e_commerce.components.onBackgroundColors
-import com.route.e_commerce.screens.main.profile.components.bottom_sheet.AddressesBottomSheet
 import com.route.e_commerce.screens.main.profile.components.ProfileListItem
+import com.route.e_commerce.screens.main.profile.components.bottom_sheet.AddressesBottomSheet
 import com.route.e_commerce.screens.main.profile.components.dialog.EditFieldDialog
 import com.route.e_commerce.screens.main.profile.components.dialog.UpdatePasswordDialog
 import com.route.e_commerce.ui.theme.ECommerceTheme
@@ -48,7 +48,7 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.onAction(ProfileEvent.LoadInitialData)
+        viewModel.setEvent(ProfileEvent.LoadInitialData)
 
         viewModel.viewEffect.collectLatest {
             when (it) {
@@ -71,7 +71,7 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
         } else {
             ProfileContent(
                 user = state.user,
-                onAction = viewModel::onAction
+                setEvent = viewModel::setEvent
             )
         }
     }
@@ -79,10 +79,10 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
     if (state.showUpdatePasswordDialog) {
         UpdatePasswordDialog(
             onConfirm = { current, new, reNew ->
-                viewModel.onAction(ProfileEvent.UpdatePassword(current, new, reNew))
-                viewModel.onAction(ProfileEvent.IsUpdatePasswordDialogVisible(false))
+                viewModel.setEvent(ProfileEvent.UpdatePassword(current, new, reNew))
+                viewModel.setEvent(ProfileEvent.IsUpdatePasswordDialogVisible(false))
             },
-            onDismiss = { viewModel.onAction(ProfileEvent.IsUpdatePasswordDialogVisible(false)) }
+            onDismiss = { viewModel.setEvent(ProfileEvent.IsUpdatePasswordDialogVisible(false)) }
         )
     }
 
@@ -95,11 +95,11 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
                     val editedField =
                         EditableField.entries.find { context.getString(it.labelRes) == label }
                     editedField?.let { field ->
-                        viewModel.onAction(field.toUpdateEvent(newValue))
+                        viewModel.setEvent(field.toUpdateEvent(newValue))
                     }
-                    viewModel.onAction(ProfileEvent.CloseEditFieldDialog)
+                    viewModel.setEvent(ProfileEvent.CloseEditFieldDialog)
                 },
-                onDismiss = { viewModel.onAction(ProfileEvent.CloseEditFieldDialog) }
+                onDismiss = { viewModel.setEvent(ProfileEvent.CloseEditFieldDialog) }
             )
         }
     }
@@ -108,10 +108,10 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
         AddressesBottomSheet(
             addresses = state.addresses,
             onAddAddress = { name, details, phone, city ->
-                viewModel.onAction(ProfileEvent.AddAddress(name, details, phone, city))
+                viewModel.setEvent(ProfileEvent.AddAddress(name, details, phone, city))
             },
-            onDeleteAddress = { viewModel.onAction(ProfileEvent.DeleteAddress(it)) },
-            onDismiss = { viewModel.onAction(ProfileEvent.IsAddressesBottomSheetVisible(false)) }
+            onDeleteAddress = { viewModel.setEvent(ProfileEvent.DeleteAddress(it)) },
+            onDismiss = { viewModel.setEvent(ProfileEvent.IsAddressesBottomSheetVisible(false)) }
         )
     }
 }
@@ -120,7 +120,7 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
 fun ProfileContent(
     modifier: Modifier = Modifier,
     user: User?,
-    onAction: (ProfileEvent) -> Unit
+    setEvent: (ProfileEvent) -> Unit
 ) {
     val scheme = MaterialTheme.colorScheme
     val context = LocalContext.current
@@ -166,7 +166,7 @@ fun ProfileContent(
             colors = OutlinedTextFieldDefaults.onBackgroundColors(),
             isEdit = true,
             onEditClick = {
-                onAction(
+                setEvent(
                     ProfileEvent.OpenEditFieldDialog(
                         context.getString(EditableField.NAME.labelRes),
                         user?.name ?: ""
@@ -186,7 +186,7 @@ fun ProfileContent(
             colors = OutlinedTextFieldDefaults.onBackgroundColors(),
             isEdit = true,
             onEditClick = {
-                onAction(
+                setEvent(
                     ProfileEvent.OpenEditFieldDialog(
                         context.getString(EditableField.EMAIL.labelRes),
                         user?.email ?: ""
@@ -206,7 +206,7 @@ fun ProfileContent(
             colors = OutlinedTextFieldDefaults.onBackgroundColors(),
             isEdit = true,
             onEditClick = {
-                onAction(
+                setEvent(
                     ProfileEvent.OpenEditFieldDialog(
                         context.getString(EditableField.PHONE.labelRes),
                         user?.phone ?: ""
@@ -218,13 +218,13 @@ fun ProfileContent(
         Spacer(Modifier.weight(1f))
 
         ProfileListItem(stringResource(R.string.addresses)) {
-            onAction(ProfileEvent.IsAddressesBottomSheetVisible(true))
+            setEvent(ProfileEvent.IsAddressesBottomSheetVisible(true))
         }
 
         Spacer(Modifier.weight(.25f))
 
         ProfileListItem(stringResource(R.string.change_password)) {
-            onAction(
+            setEvent(
                 ProfileEvent.IsUpdatePasswordDialogVisible(
                     true
                 )
@@ -241,7 +241,7 @@ fun ProfileContentPreview() {
     ECommerceTheme {
         ProfileContent(
             user = User(name = "Test User", email = "test@example.com", phone = "010123456789"),
-            onAction = {}
+            setEvent = {}
         )
     }
 }

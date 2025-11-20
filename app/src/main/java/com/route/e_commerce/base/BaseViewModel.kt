@@ -8,32 +8,42 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-abstract class BaseViewModel<STATE : ViewState, ACTION, EFFECT : ViewSideEffect>(
-    initialState: STATE
+abstract class BaseViewModel<S : ViewState, E : ViewEvent, F : ViewSideEffect>(
+    initialState: S
 ) : ViewModel() {
 
     private val _viewState = MutableStateFlow(initialState)
     val viewState = _viewState.asStateFlow()
 
-    private val _viewEffect = MutableSharedFlow<EFFECT>()
+    private val _viewEvent = MutableSharedFlow<E>()
+    private val viewEvent = _viewEvent.asSharedFlow()
+
+    private val _viewEffect = MutableSharedFlow<F>()
     val viewEffect = _viewEffect.asSharedFlow()
 
+    init {
+        subscribeToEvents()
+    }
 
-    fun onAction(action: ACTION) {
+    fun setEvent(event: E) {
+        viewModelScope.launch { _viewEvent.emit(event) }
+    }
+
+    private fun subscribeToEvents() {
         viewModelScope.launch {
-            handleAction(action)
+            viewEvent.collect {
+                handleEvent(it)
+            }
         }
     }
 
-    protected abstract suspend fun handleAction(action: ACTION)
-
-    protected fun updateState(newState: STATE) {
-        _viewState.value = newState
+    protected fun setState(newState: S.() -> S) {
+        _viewState.value = viewState.value.newState()
     }
 
-    protected fun sendEffect(effect: EFFECT) {
-        viewModelScope.launch {
-            _viewEffect.emit(effect)
-        }
+    protected fun setEffect(effect: () -> F) {
+        viewModelScope.launch { _viewEffect.emit(effect()) }
     }
+
+    protected abstract fun handleEvent(event: E)
 }
