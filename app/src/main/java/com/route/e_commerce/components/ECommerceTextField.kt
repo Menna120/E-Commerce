@@ -65,31 +65,34 @@ fun ECommerceTextField(
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
             textStyle = typography.bodyMedium,
+            readOnly = isEdit,
             placeholder = {
                 Text(
                     text = placeholderText ?: label,
                     style = typography.bodyMedium.copy(fontWeight = FontWeight.Light)
                 )
             },
-            trailingIcon = {
-                if (isPassword) {
-                    IconButton({ passwordVisible = !passwordVisible }) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(if (passwordVisible) R.drawable.ic_view else R.drawable.ic_hide),
-                            contentDescription = if (passwordVisible) "Hide password" else "Show password"
-                        )
+            trailingIcon = if (isPassword || isEdit) {
+                {
+                    if (isPassword) {
+                        IconButton({ passwordVisible = !passwordVisible }) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(if (passwordVisible) R.drawable.ic_view else R.drawable.ic_hide),
+                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                            )
+                        }
                     }
-                }
 
-                if (isEdit) {
-                    IconButton({ onEditClick?.invoke() }) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_edit),
-                            contentDescription = stringResource(R.string.edit, label),
-                        )
+                    if (isEdit) {
+                        IconButton({ onEditClick?.invoke() }) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(R.drawable.ic_edit),
+                                contentDescription = stringResource(R.string.edit, label),
+                            )
+                        }
                     }
                 }
-            },
+            } else null,
             singleLine = true,
             keyboardOptions = keyboardOptions,
             visualTransformation = if (isPassword && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,

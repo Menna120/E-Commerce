@@ -34,7 +34,7 @@ fun DialogButtons(
         TextButton(onClick = onSaveClick, enabled = isConfirmEnabled) {
             Text(
                 text = stringResource(R.string.save),
-                color = scheme.onBackground,
+                color = scheme.primary,
                 style = typo.bodySmall
             )
         }
