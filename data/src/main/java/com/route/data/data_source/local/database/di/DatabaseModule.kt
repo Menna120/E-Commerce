@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.route.data.data_source.local.database.dao.AddressDao
 import com.route.data.data_source.local.database.db.ECommerceDatabase
+import com.route.data.localStorage.dao.ProductsDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,4 +29,10 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideAddressDao(database: ECommerceDatabase): AddressDao = database.addressDao()
+
+    @Provides
+    @Singleton
+    fun provideProductsDao(database:ECommerceDatabase): ProductsDao {
+        return database.productsDao()
+    }
 }

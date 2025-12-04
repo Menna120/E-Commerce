@@ -45,6 +45,7 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.adapters)
     ksp(libs.hilt.compiler)
 
     // Retrofit
@@ -60,6 +61,7 @@ dependencies {
 
     // Json Serialization
     implementation(libs.kotlinx.serialization.json)
+    implementation (libs.converter.gson)
 
     // Room
     implementation(libs.androidx.room.runtime)

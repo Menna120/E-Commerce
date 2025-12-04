@@ -2,21 +2,22 @@ package com.route.e_commerce.navigation.graph
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
+import androidx.navigation.navArgument
 import com.route.e_commerce.navigation.Screen
 import com.route.e_commerce.screens.main.category.CategoryScreen
 import com.route.e_commerce.screens.main.home.HomeScreen
 import com.route.e_commerce.screens.main.product_list.ProductListScreen
 import com.route.e_commerce.screens.main.profile.ProfileScreen
 import com.route.e_commerce.screens.main.wishlist.WishlistScreen
+import com.route.e_commerce.screens.product_details.ProductDetailsScreen
 import com.route.e_commerce.utils.LocalMainNavController
 
 @Composable
-fun MainNavGraph(modifier: Modifier) {
+fun MainNavGraph(modifier: Modifier, searchQuery: String) {
     val navController = LocalMainNavController.current
-
     NavHost(
         navController = navController,
         startDestination = Screen.Home,
@@ -27,8 +28,20 @@ fun MainNavGraph(modifier: Modifier) {
         composable<Screen.Wishlist> { WishlistScreen() }
         composable<Screen.Profile> { ProfileScreen() }
         composable<Screen.ProductList> { backStackEntry ->
-            val productList = backStackEntry.toRoute<Screen.ProductList>()
-            ProductListScreen(subCategoryId = productList.subCategoryId)
+            ProductListScreen(
+                navController = navController,
+                searchQuery = searchQuery
+            )
+        }
+        composable(
+            route = "productDetails/{productId}",
+            arguments = listOf(navArgument("productId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId")
+            ProductDetailsScreen(
+                navController = navController,
+                productId = productId
+            )
         }
     }
 }

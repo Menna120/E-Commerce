@@ -44,6 +44,7 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.room.common.jvm)
     ksp(libs.hilt.compiler)
 
     testImplementation(libs.junit)

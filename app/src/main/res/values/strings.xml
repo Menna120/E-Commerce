@@ -40,4 +40,12 @@
     <string name="details">Details</string>
     <string name="phone">Phone</string>
     <string name="city">City</string>
+    <string name="add_to_cart_button">add_to_cart_button</string>
+    <string name="add_to_cart">Add to cart</string>
+    <string name="total_price">Total price</string>
+    <string name="color">Color</string>
+    <string name="description">Description</string>
+    <string name="plus">plus</string>
+    <string name="unknown_product">Unknown Product</string>
+    <string name="product_details">Product Details</string>
 </resources>
